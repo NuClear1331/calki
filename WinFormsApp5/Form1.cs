@@ -26,61 +26,61 @@ namespace WinFormsApp5
         {
             try
             {
-                // Get the function expression from the TextBox
+                
                 string functionExpression = functionTextBox.Text;
 
-                // Parse the function expression into a symbolic expression
+                
                 SymbolicExpression function = SymbolicExpression.Parse(functionExpression);
                 var variableValues = new Dictionary<string, FloatingPoint>
                 {
-                    { "x", 0.0 } // Set the initial value for "x", you can change this as needed
+                    { "x", 0.0 } 
                 };
 
-                // Convert the symbolic expression to a delegate
+                
                 Func<double, double> functionDelegate = x =>
                 {
                     variableValues["x"] = x;
                     return function.Evaluate(variableValues).RealValue;
                 };
 
-                // Set the integration limits
+                
                 double lowerLimit = -1;
                 double upperLimit = 1;
 
-                // Calculate the integral using Gauss-Legendre method
+               
                 double result = Integrate.OnClosedInterval(functionDelegate, lowerLimit, upperLimit, 5);
 
-                // Display the result
-                resultLabel.Text = $"Result: {result:F6}";
+              
+                resultLabel.Text = $"Wynik: {result:F6}";
                 PlotFunction(functionDelegate, lowerLimit, upperLimit);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Wyst¹pi³ b³¹d: {ex.Message}", "B³¹d", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void PlotFunction(Func<double, double> function, double lower, double upper)
         {
-            // Plot the function using ScottPlot
+         
             var plt = scottPlot.Plot; 
             plt.Clear();
 
-            // Generate points for plotting
+            
             double[] xValues = ScottPlot.DataGen.Range(lower, upper, 0.01);
             double[] yValues = xValues.Select(function).ToArray();
 
-            // Plot the function
-            plt.PlotScatter(xValues, yValues, label: "Function");
+           
+            plt.PlotScatter(xValues, yValues, label: "Funkcja");
 
-            // Highlight the integration area
-            plt.PlotVLine(lower, color: System.Drawing.Color.Red, lineStyle: LineStyle.Dash, label: "Integration Limits");
+            
+            plt.PlotVLine(lower, color: System.Drawing.Color.Red, lineStyle: LineStyle.Dash, label: "Granice");
             plt.PlotVLine(upper, color: System.Drawing.Color.Red, lineStyle: LineStyle.Dash);
 
             scottPlot.Refresh();
-            // Show the legend
+            
             plt.Legend();
 
-            // Render the plot
+            
             plt.Render();
         }
 
